@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}ثبت‌نام بازیکن جدید — باشگاه سیمرغ{% endblock %}
+{% block body_class %}auth-page-body{% endblock %}
+
+{% block bg_overlay %}
+<div style="position: fixed; inset: 0; background-image: linear-gradient(135deg, rgba(6,11,20,0.85) 0%, rgba(11,21,38,0.85) 100%), url('{{ url_for('static', filename='bg.jpg') }}'); background-size: cover; background-position: center; z-index: -10; pointer-events: none;"></div>
+{% endblock %}
+
+{% block content %}
+<main class="top-form-wrapper">
+    <form id="registerForm" action="/register" method="POST" enctype="multipart/form-data">
+        <span class="eyebrow">فرم پذیرش</span>
+        <h2 style="margin-top:14px; text-align:right;">فرم ثبت‌نام بازیکن جدید</h2>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-success">{{ messages[0] }}</div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="form-group">
+            <label>نام:</label>
+            <input type="text" name="first_name" placeholder="مثال: احمد" required>
+        </div>
+
+        <div class="form-group">
+            <label>نام خانوادگی:</label>
+            <input type="text" name="last_name" placeholder="مثال: محمدی" required>
+        </div>
+
+        <div class="form-group">
+            <label>سن شما:</label>
+            <input type="number" name="age" placeholder="مثال: ۱۶" required>
+        </div>
+
+        <div class="form-group">
+            <label>پست تخصصی:</label>
+            <select name="position" required>
+                <option value="" disabled selected>لطفاً پست خود را انتخاب کنید&hellip;</option>
+                <option value="دروازه‌بان">دروازه‌بان (GK)</option>
+                <option value="مدافع مرکزی">مدافع مرکزی (CB)</option>
+                <option value="مدافع چپ">مدافع چپ (LB)</option>
+                <option value="مدافع راست">مدافع راست (RB)</option>
+                <option value="هافبک دفاعی">هافبک دفاعی (DM)</option>
+                <option value="هافبک مرکزی">هافبک مرکزی (CM)</option>
+                <option value="هافبک تهاجمی">هافبک تهاجمی (AM)</option>
+                <option value="وینگر چپ">وینگر چپ (LW)</option>
+                <option value="وینگر راست">وینگر راست (RW)</option>
+                <option value="مهاجم نوک">مهاجم نوک (ST)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>شماره تماس:</label>
+            <input type="text" name="phone" placeholder="مثال: ۰۹۰۰۰..." dir="ltr" style="text-align: left;" required>
+        </div>
+
+        <div class="form-group">
+            <label>سکونت:</label>
+            <input type="text" name="address" placeholder="مثال: تهران..." required>
+        </div>
+
+        <div class="form-group">
+            <label>عکس پرسنلی:</label>
+            <div class="file-upload-shell">
+                <span class="file-upload-btn">انتخاب عکس</span>
+                <span id="fileNameDisplay" class="file-upload-name">تصویری انتخاب نشده است&hellip;</span>
+                <input type="file" name="profile_picture" id="realFileInput" onchange="updateFileName()"
+                    class="file-upload-input" accept="image/*">
+            </div>
+        </div>
+
+        <button type="submit">ذخیره و ثبت‌نام بازیکن</button>
+
+        <div class="form-back-link">
+            <a href="{{ url_for('home') }}">&rarr; بازگشت به صفحه اصلی</a>
+        </div>
+    </form>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function updateFileName() {
+        var fileInput = document.getElementById('realFileInput');
+        var fileDisplay = document.getElementById('fileNameDisplay');
+        if (fileInput.files.length > 0) {
+            fileDisplay.textContent = fileInput.files[0].name;
+            fileDisplay.style.color = '#EDF3FA';
+        } else {
+            fileDisplay.textContent = 'تصویری انتخاب نشده است…';
+            fileDisplay.style.color = '#5C6E62';
+        }
+    }
+</script>
+{% endblock %}

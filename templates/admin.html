@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}پنل مدیریت — باشگاه سیمرغ{% endblock %}
+
+{% block bg_overlay %}<div class="site-bg-overlay"></div>{% endblock %}
+
+{% block mobile_cta %}
+<li class="mobile-only">
+    <a href="/logout" class="btn-join" onclick="return confirm('آیا مطمئن هستید که می‌خواهید از پنل مدیریت خارج شوید؟');">
+        <span>خروج از پنل</span>
+    </a>
+</li>
+{% endblock %}
+
+{% block header_right %}
+<a href="/logout" class="btn-logout desktop-only" onclick="return confirm('آیا مطمئن هستید که می‌خواهید از پنل مدیریت خارج شوید؟');">خروج از پنل</a>
+{% endblock %}
+
+{% block content %}
+<main class="admin-main-content">
+
+    <!-- ==================== درخواست‌های جدید ==================== -->
+    <div data-print-block="pending">
+        <div class="section-title-row">
+            <h3 class="admin-section-title">درخواست‌های جدید (نیاز به بررسی)</h3>
+            <button type="button" class="btn-print" onclick="printSection('pending')">&#128424; چاپ</button>
+        </div>
+        <div class="print-only-header">
+            <h2>باشگاه سیمرغ &mdash; درخواست‌های جدید</h2>
+            <p class="print-meta">تاریخ چاپ: <span class="print-date"></span></p>
+        </div>
+        <div class="admin-table-container">
+            <table class="players-table">
+                <thead>
+                    <tr>
+                        <th class="col-center">عکس</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>سن</th>
+                        <th>پست بازی</th>
+                        <th>شماره تلفن</th>
+                        <th>محل سکونت</th>
+                        <th>تیم پیشنهادی (خودکار)</th>
+                        <th style="text-align: center; width: 260px;" class="no-print">عملیات مدیریت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in pending %}
+                    <tr class="zoom-row">
+                        <td class="col-center td-photo" data-label="عکس">
+                            {% if player[7] %}
+                            <img src="{{ url_for('static', filename='uploads/' + player[7]) }}" alt="عکس" class="player-thumb">
+                            {% else %}
+                            <span class="default-avatar">&#128100;</span>
+                            {% endif %}
+                        </td>
+                        <td class="player-name" data-label="نام و نام خانوادگی">{{ player[1] }} {{ player[2] }}</td>
+                        <td data-label="سن">{{ player[3] }} سال</td>
+                        <td data-label="پست بازی"><span class="badge-post">{{ player[4] }}</span></td>
+                        <td class="phone-text" data-phone="{{ player[5] }}" data-label="شماره تلفن"><span class="phone-value">{{ player[5] }}</span></td>
+                        <td class="player-address" data-label="محل سکونت">{{ player[6] }}</td>
+                        <td data-label="تیم پیشنهادی">
+                            <span class="badge-team-suggested">{{ team_map.get(player[9], "نامشخص") }}</span>
+                        </td>
+                        <td style="text-align: center;" data-label="عملیات مدیریت" class="no-print">
+                            <div class="action-cell">
+                                <form class="approve-form" method="POST"
+                                    action="/action/approve/{{ player[0] }}"
+                                    onsubmit="return confirm('آیا از تایید این بازیکن با تیم انتخاب‌شده مطمئن هستید؟');">
+                                    <select name="team" class="team-select-mini">
+                                        {% for slug, name in team_map.items() %}
+                                        <option value="{{ slug }}" {% if slug==player[9] %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn-act btn-approve">تایید</button>
+                                </form>
+
+                                <form method="POST" action="/action/reject/{{ player[0] }}"
+                                    onsubmit="return confirm('آیا از رد کردن این درخواست و انتقال آن به لیست ردشدگان مطمئن هستید؟');">
+                                    <button type="submit" class="btn-act btn-reject">رد کردن</button>
+                                </form>
+
+                                <form method="POST" action="/action/delete/{{ player[0] }}"
+                                    onsubmit="return confirm('حذف کامل این درخواست؟');">
+                                    <button type="submit" class="btn-act btn-delete">حذف</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #7C8CA6;">هیچ درخواست جدیدی وجود ندارد.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== بازیکنان تایید‌شده، بر اساس تیم ==================== -->
+    <h3 class="admin-section-title" style="border-right-color: #34D399;">&#128994; لیست بازیکنان قبول‌شده</h3>
+
+    {% for slug, team_name in team_map.items() %}
+    <div class="team-group" data-print-block="team-{{ slug }}">
+        <div class="section-title-row">
+            <h4 class="team-group-title">
+                {{ team_name }}
+                <span class="team-group-count">{{ approved_by_team[slug]|length }} نفر</span>
+            </h4>
+            <button type="button" class="btn-print" onclick="printSection('team-{{ slug }}')">&#128424; چاپ</button>
+        </div>
+        <div class="print-only-header">
+            <h2>باشگاه سیمرغ &mdash; {{ team_name }} (تایید‌شده)</h2>
+            <p class="print-meta">تاریخ چاپ: <span class="print-date"></span></p>
+        </div>
+        <div class="admin-table-container">
+            <table class="players-table">
+                <thead>
+                    <tr>
+                        <th class="col-center">عکس</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>سن</th>
+                        <th>پست بازی</th>
+                        <th>شماره تلفن</th>
+                        <th>محل سکونت</th>
+                        <th style="text-align: center; width: 100px;" class="no-print">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in approved_by_team[slug] %}
+                    <tr class="zoom-row" style="background: rgba(52, 211, 153, 0.06);">
+                        <td class="col-center td-photo" data-label="عکس">
+                            {% if player[7] %}
+                            <img src="{{ url_for('static', filename='uploads/' + player[7]) }}" alt="عکس" class="player-thumb">
+                            {% else %}
+                            <span class="default-avatar">&#128100;</span>
+                            {% endif %}
+                        </td>
+                        <td class="player-name" data-label="نام و نام خانوادگی">{{ player[1] }} {{ player[2] }}</td>
+                        <td data-label="سن">{{ player[3] }} سال</td>
+                        <td data-label="پست بازی"><span class="badge-post" style="background: #34D399; color: #0C1A11;">{{ player[4] }}</span></td>
+                        <td class="phone-text" data-phone="{{ player[5] }}" data-label="شماره تلفن"><span class="phone-value">{{ player[5] }}</span></td>
+                        <td class="player-address" data-label="محل سکونت">{{ player[6] }}</td>
+                        <td style="text-align: center;" data-label="عملیات" class="no-print">
+                            <form method="POST" action="/action/delete/{{ player[0] }}"
+                                onsubmit="return confirm('آیا از حذف دائمی این بازیکن مطمئن هستید؟ این عمل غیرقابل بازگشت است.');">
+                                <button type="submit" class="btn-act btn-delete">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #7C8CA6;">هنوز بازیکنی برای این تیم تایید نشده است.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- ==================== بازیکنان ردشده ==================== -->
+    <div data-print-block="rejected">
+        <div class="section-title-row">
+            <h3 class="admin-section-title" style="border-right-color: #E5484D;">&#128308; لیست بازیکنان ردشده</h3>
+            <button type="button" class="btn-print" onclick="printSection('rejected')">&#128424; چاپ</button>
+        </div>
+        <div class="print-only-header">
+            <h2>باشگاه سیمرغ &mdash; بازیکنان ردشده</h2>
+            <p class="print-meta">تاریخ چاپ: <span class="print-date"></span></p>
+        </div>
+        <div class="admin-table-container">
+            <table class="players-table">
+                <thead>
+                    <tr>
+                        <th class="col-center">عکس</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>سن</th>
+                        <th>پست بازی</th>
+                        <th>شماره تلفن</th>
+                        <th>محل سکونت</th>
+                        <th style="text-align: center; width: 100px;" class="no-print">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in rejected %}
+                    <tr class="zoom-row" style="background: rgba(229, 72, 77, 0.04);">
+                        <td class="col-center td-photo" data-label="عکس">
+                            {% if player[7] %}
+                            <img src="{{ url_for('static', filename='uploads/' + player[7]) }}" alt="عکس" class="player-thumb">
+                            {% else %}
+                            <span class="default-avatar">&#128100;</span>
+                            {% endif %}
+                        </td>
+                        <td class="player-name" style="color: #7C8CA6; text-decoration: line-through;" data-label="نام و نام خانوادگی">{{ player[1] }} {{ player[2] }}</td>
+                        <td data-label="سن">{{ player[3] }} سال</td>
+                        <td data-label="پست بازی"><span class="badge-post" style="background: #E5484D; color: white;">{{ player[4] }}</span></td>
+                        <td class="phone-text" data-phone="{{ player[5] }}" data-label="شماره تلفن"><span class="phone-value">{{ player[5] }}</span></td>
+                        <td class="player-address" data-label="محل سکونت">{{ player[6] }}</td>
+                        <td style="text-align: center;" data-label="عملیات" class="no-print">
+                            <form method="POST" action="/action/delete/{{ player[0] }}"
+                                onsubmit="return confirm('حذف کامل این درخواست؟');">
+                                <button type="submit" class="btn-act btn-delete">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #7C8CA6;">هیچ بازیکنی در لیست مردودین نیست.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function printSection(blockId) {
+        var blocks = document.querySelectorAll('[data-print-block]');
+        blocks.forEach(function (b) {
+            b.classList.toggle('print-hide', b.getAttribute('data-print-block') !== blockId);
+        });
+        document.querySelectorAll('.print-date').forEach(function (el) {
+            el.textContent = new Date().toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+        });
+        document.body.classList.add('is-printing');
+        window.print();
+    }
+
+    window.addEventListener('afterprint', function () {
+        document.querySelectorAll('[data-print-block]').forEach(function (b) {
+            b.classList.remove('print-hide');
+        });
+        document.body.classList.remove('is-printing');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}باشگاه سیمرغ{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2026">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    {% block bg_overlay %}{% endblock %}
+
+    <header class="site-header">
+        <div class="header-container">
+            <div class="header-top-bar">
+
+                <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="باز کردن منو">&#9776;</button>
+
+                <div class="logo"><span class="bulb">&#9679;</span> باشگاه&nbsp;سیمرغ</div>
+
+                <nav class="navigation" id="mobileMenu">
+                    <ul>
+                        {% block mobile_cta %}
+                        <li class="mobile-only">
+                            <a href="#" class="btn-join" onclick="openModal(); return false;">
+                                <span>پیوستن به باشگاه</span>
+                            </a>
+                        </li>
+                        {% endblock %}
+                        <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">صفحه اصلی</a></li>
+                        <li><a href="{{ url_for('news') }}" class="{% block nav_news %}{% endblock %}">اخبار باشگاه</a></li>
+                        <li class="nav-dropdown">
+                            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">تیم‌ها <span class="arrow">&#9662;</span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/teams/under-14" {% if team_slug=='under-14' %}class="active-team"{% endif %}>تیم نونهالان (زیر ۱۴)</a></li>
+                                <li><a href="/teams/under-17" {% if team_slug=='under-17' %}class="active-team"{% endif %}>تیم نوجوانان (زیر ۱۷)</a></li>
+                                <li><a href="/teams/youth" {% if team_slug=='youth' %}class="active-team"{% endif %}>تیم جوانان (زیر ۱۹)</a></li>
+                                <li><a href="/teams/seniors" {% if team_slug=='seniors' %}class="active-team"{% endif %}>تیم بزرگسالان</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{{ url_for('gallery') }}" class="{% block nav_gallery %}{% endblock %}">گالری تصاویر</a></li>
+                        <li><a href="{{ url_for('about') }}" class="{% block nav_about %}{% endblock %}">درباره ما</a></li>
+                    </ul>
+                </nav>
+
+                <div class="left-side">
+                    {% block header_right %}
+                    <a href="#" class="btn-join desktop-only" onclick="openModal(); return false;">
+                        <span>پیوستن به باشگاه</span>
+                    </a>
+                    {% endblock %}
+                    <div class="header-badge"><span class="badge-emoji">&#127942;</span></div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    {% block modal %}
+    <div id="modal" class="modal-overlay">
+        <div class="modal-box">
+            <button onclick="closeModal()" class="modal-close" aria-label="بستن">&#10005;</button>
+            <h3>چه می‌خواهی؟</h3>
+            <a href="{{ url_for('register') }}" class="modal-btn green">ثبت‌نام بازیکن جدید</a>
+            <a href="{{ url_for('login') }}" class="modal-btn red">ورود ادمین</a>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% include 'footer.html' %}
+
+    <script>
+        function toggleMobileMenu() {
+            var menu = document.getElementById("mobileMenu");
+            if (menu) { menu.classList.toggle("open"); }
+        }
+
+        function openModal() {
+            var modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(function () { modal.classList.add('active-modal'); }, 20);
+            }
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('modal');
+            if (modal) {
+                modal.classList.remove('active-modal');
+                setTimeout(function () { modal.style.display = 'none'; }, 250);
+            }
+        }
+
+        function toggleDropdown(event) {
+            if (window.innerWidth <= 860) {
+                event.preventDefault();
+                var parentLi = event.target.closest('.nav-dropdown');
+                if (parentLi) { parentLi.classList.toggle('show-dropdown'); }
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            var modal = document.getElementById('modal');
+            if (modal && e.target === modal) { closeModal(); }
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+
+</html>

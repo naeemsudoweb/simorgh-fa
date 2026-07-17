@@ -1,0 +1,45 @@
+FLOODLIGHT FC — YOUTH FOOTBALL ACADEMY TEMPLATE
+Regular License
+
+This license is granted to the buyer by [YOUR NAME / STORE NAME] for the
+"Simorgh FC" Flask website template purchased through Fiverr.
+
+1. GRANT OF LICENSE
+   You are granted a non-exclusive, non-transferable license to use this
+   template to build ONE (1) end product (one website, for yourself or for
+   one client), for personal or commercial use.
+
+2. YOU MAY
+   - Modify the code, text, colors, images, and structure freely.
+   - Use the finished website for a commercial project or client delivery.
+   - Deploy the finished website to a live server.
+
+3. YOU MAY NOT
+   - Resell, sublicense, or redistribute the template's source code itself
+     (as a template, theme, or "starter kit") on any marketplace.
+   - Claim authorship of the original template design/code.
+   - Share the raw template files publicly (e.g. on a public GitHub repo)
+     in a way that lets others download and reuse it as a template.
+
+4. FOR EACH ADDITIONAL PROJECT / CLIENT
+   A separate license (extended license or a new purchase) is required
+   for each additional end product built from this template.
+
+5. THIRD-PARTY ASSETS
+   - Fonts (Anton, Manrope, JetBrains Mono) are distributed under the
+     SIL Open Font License via Google Fonts — free for commercial use,
+     no attribution required.
+   - The background image (/static/bg.jpg) is original artwork created
+     specifically for this template. No external license applies to it.
+
+6. NO WARRANTY
+   This template is provided "as is" without warranty of any kind. The
+   seller is not liable for any damages arising from its use.
+
+7. SUPPORT
+   [Describe what support you're offering with the purchase, e.g.
+   "30 days of installation support via Fiverr inbox."]
+
+---
+Replace the bracketed placeholders above with your own details before
+publishing this as a product.

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ team_name }} — باشگاه سیمرغ{% endblock %}
+
+{% block bg_overlay %}<div class="site-bg-overlay"></div>{% endblock %}
+
+{% block content %}
+<main>
+    <div class="team-hero">
+        <span class="eyebrow">لیست تیم</span>
+        <h1 style="margin-top:16px;">{{ team_name }}</h1>
+        <p>لیست بازیکنان تایید‌شده این تیم</p>
+    </div>
+
+    <div class="pitch-divider"><span class="dot"></span></div>
+
+    {% if players %}
+    <div class="players-grid">
+        {% for player in players %}
+        <div class="player-card">
+            {% if player[7] %}
+            <img src="{{ url_for('static', filename='uploads/' + player[7]) }}" alt="{{ player[1] }}">
+            {% else %}
+            <div class="default-avatar-lg">&#128100;</div>
+            {% endif %}
+            <h4>{{ player[1] }} {{ player[2] }}</h4>
+            <span class="player-position">{{ player[4] }}</span>
+            <div class="player-age">{{ player[3] }} سال</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-team-msg">
+        هنوز بازیکنی برای این تیم تایید نشده است.
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

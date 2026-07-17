@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}باشگاه سیمرغ — آکادمی فوتبال جوانان{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block bg_overlay %}
+<div style="position: fixed; inset: 0; background-image: linear-gradient(135deg, rgba(6,11,20,0.85) 0%, rgba(11,21,38,0.85) 100%), url('{{ url_for('static', filename='bg.jpg') }}'); background-size: cover; background-position: center; z-index: -10; pointer-events: none;"></div>
+{% endblock %}
+
+{% block content %}
+<main class="hero-section">
+    <div class="hero-content">
+        <span class="eyebrow">تأسیس ۱۳۹۸ &middot; قدم به قدم آبدیده‌تر</span>
+        <h1>آبدیده شو.<br>به <span class="accent">تیم اول</span> برس.</h1>
+        <p>استعداد خود را با مربیان حرفه‌ای شکوفا کن و مسیر روشنی از تیم نونهالان تا تیم بزرگسالان طی کن. همین امروز به ما بپیوند.</p>
+        <a href="#" class="hero-btn" onclick="openModal(); return false;">پیوستن به باشگاه</a>
+
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="num">۴</span><span class="label">رده سنی</span></div>
+            <div class="hero-stat"><span class="num">۱۳۹۸</span><span class="label">سال تأسیس</span></div>
+            <div class="hero-stat"><span class="num">۹۰</span><span class="label">دقیقه تمرکز</span></div>
+        </div>
+    </div>
+</main>
+{% endblock %}
